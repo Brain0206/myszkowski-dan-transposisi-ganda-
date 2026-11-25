@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f1e9">
+  <title>Ruang Sandi — Myszkowski Ganda</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f5f1e9;
+      --ink: #1c2535;
+      --muted: #647084;
+      --line: #ded8ce;
+      --card: #fffdf9;
+      --violet: #6853d6;
+      --violet-soft: #eeeaff;
+      --lime: #d7f36a;
+      --dark: #252b3b;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--paper);
+      color: var(--ink);
+      font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: min(100% - 40px, 1120px);
+      margin: 0 auto;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .78rem;
+      font-weight: 850;
+      letter-spacing: .13em;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border-radius: 9px;
+      background: var(--violet);
+      color: white;
+      font-size: .85rem;
+      letter-spacing: 0;
+    }
+
+    .topbar span:last-child {
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    main {
+      width: min(100% - 40px, 1120px);
+      margin: 0 auto;
+      padding: 44px 0 64px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 250px;
+      gap: 32px;
+      align-items: end;
+      margin-bottom: 32px;
+    }
+
+    .kicker {
+      margin: 0 0 12px;
+      color: var(--violet);
+      font-size: .78rem;
+      font-weight: 850;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 720px;
+      margin: 0;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      letter-spacing: -.065em;
+      line-height: .98;
+    }
+
+    .hero-copy {
+      max-width: 620px;
+      margin: 18px 0 0;
+      color: var(--muted);
+    }
+
+    .hero-stamp {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--lime);
+      transform: rotate(2deg);
+    }
+
+    .hero-stamp strong {
+      display: block;
+      font-size: 1.15rem;
+      letter-spacing: -.03em;
+    }
+
+    .hero-stamp span {
+      color: #4a552b;
+      font-size: .82rem;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(280px, .82fr) minmax(0, 1.18fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--card);
+      box-shadow: 0 12px 32px #312a1c0c;
+    }
+
+    .input-panel { padding: 24px; }
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      letter-spacing: -.025em;
+    }
+
+    .tag {
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: var(--violet-soft);
+      color: var(--violet);
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 7px;
+      font-size: .84rem;
+      font-weight: 750;
+    }
+
+    textarea, input {
+      display: block;
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: #fbfaf6;
+      color: var(--ink);
+      font: inherit;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    textarea { min-height: 92px; padding: 12px; resize: vertical; }
+    input { height: 46px; padding: 0 12px; font-family: var(--mono); text-transform: uppercase; }
+    textarea:focus, input:focus {
+      border-color: var(--violet);
+      box-shadow: 0 0 0 3px #6853d61a;
+    }
+
+    .key-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .key-grid label { margin-top: 15px; }
+    .helper {
+      margin: 16px 0 0;
+      padding: 12px;
+      border-radius: 10px;
+      background: #f2efe7;
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    .run-button {
+      width: 100%;
+      margin-top: 18px;
+      padding: 12px 16px;
+      border: 0;
+      border-radius: 11px;
+      background: var(--violet);
+      color: #fff;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .run-button:hover { background: #5641c3; }
+    .run-button:focus-visible { outline: 3px solid #a69bed; outline-offset: 3px; }
+    .status { min-height: 1.4em; margin: 10px 0 0; color: #b13c43; font-size: .82rem; }
+
+    .result-panel { overflow: hidden; }
+    .result-header {
+      padding: 22px 24px;
+      background: var(--dark);
+      color: white;
+    }
+
+    .result-header h2 { font-size: 1.25rem; }
+    .result-header p { margin: 5px 0 0; color: #c3c8d3; font-size: .82rem; }
+    .stages { padding: 18px; }
+
+    .stage {
+      margin-bottom: 13px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .stage-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .stage-title { margin: 0; font-size: .92rem; font-weight: 800; }
+    .stage-key { color: var(--muted); font: .72rem var(--mono); }
+    .stage-value {
+      margin: 0;
+      overflow-wrap: anywhere;
+      color: #34304e;
+      font: 650 .9rem/1.65 var(--mono);
+    }
+
+    .plain-stage { background: #f7f5ef; }
+    .final-stage {
+      margin: 0;
+      border-color: var(--violet);
+      background: var(--violet-soft);
+    }
+
+    .final-stage .stage-title { color: var(--violet); }
+    .final-stage .stage-value { color: #2a205f; font-size: 1rem; font-weight: 800; }
+
+    .arrow {
+      display: flex;
+      justify-content: center;
+      height: 22px;
+      color: var(--violet);
+      font-weight: 900;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    @media (max-width: 760px) {
+      .hero { grid-template-columns: 1fr; gap: 20px; }
+      .hero-stamp { max-width: 260px; }
+      .workspace { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .topbar, main { width: min(100% - 28px, 1120px); }
+      .topbar { padding: 16px 0; }
+      main { padding-top: 32px; }
+      .key-grid { grid-template-columns: 1fr; gap: 0; }
+      .input-panel { padding: 18px; }
+      .stages { padding: 12px; }
+      footer { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="topbar" aria-label="Header">
+    <div class="brand"><span class="brand-mark">R</span> RUANG SANDI</div>
+    <span>MODUL 04 · KRIPTOGRAFI</span>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <div>
+        <p class="kicker">Transposition cipher / 02 passes</p>
+        <h1>Susun ulang.<br>Enkripsi dua kali.</h1>
+        <p class="hero-copy">Eksperimen dengan transposisi Myszkowski. Masukkan plainteks dan dua kunci untuk melihat perubahan pada setiap tahap.</p>
+      </div>
+      <aside class="hero-stamp" aria-label="Ringkasan metode">
+        <strong>MYSZKOWSKI × 2</strong>
+        <span>Kolom berulang dibaca mendatar</span>
+      </aside>
+    </header>
+
+    <div class="workspace">
+      <section class="panel input-panel" aria-labelledby="input-heading">
+        <div class="section-heading">
+          <h2 id="input-heading">Atur masukan</h2>
+          <span class="tag">Input</span>
+        </div>
+
+        <label for="plaintext">Plainteks</label>
+        <textarea id="plaintext" rows="3">kornelito-febriano-jehali</textarea>
+
+        <div class="key-grid">
+          <div>
+            <label for="key-one">Kunci tahap 1</label>
+            <input id="key-one" value="yohanes" autocomplete="off">
+          </div>
+          <div>
+            <label for="key-two">Kunci tahap 2</label>
+            <input id="key-two" value="yohanes" autocomplete="off">
+          </div>
+        </div>
+
+        <p class="helper">Tanda `-` dipertahankan. Spasi dan karakter selain A–Z atau `-` diabaikan. App menambahkan `@` otomatis agar tabel setiap tahap penuh.</p>
+        <button class="run-button" id="run-button" type="button">Jalankan transposisi</button>
+        <p class="status" id="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="panel result-panel" aria-labelledby="result-heading">
+        <header class="result-header">
+          <h2 id="result-heading">Jejak enkripsi</h2>
+          <p>Hasil tahap pertama menjadi masukan untuk tahap kedua.</p>
+        </header>
+
+        <div class="stages">
+          <article class="stage plain-stage">
+            <div class="stage-top">
+              <h3 class="stage-title">00 / Normalisasi</h3>
+              <span class="stage-key">A–Z + -</span>
+            </div>
+            <p class="stage-value" id="normalized-result">—</p>
+          </article>
+          <div class="arrow" aria-hidden="true">↓</div>
+          <article class="stage">
+            <div class="stage-top">
+              <h3 class="stage-title">01 / Myszkowski</h3>
+              <span class="stage-key" id="first-key-order">KUNCI 1</span>
+            </div>
+            <p class="stage-value" id="first-transposition">—</p>
+          </article>
+          <div class="arrow" aria-hidden="true">↓</div>
+          <article class="stage final-stage">
+            <div class="stage-top">
+              <h3 class="stage-title">02 / Hasil akhir</h3>
+              <span class="stage-key" id="second-key-order">KUNCI 2</span>
+            </div>
+            <p class="stage-value" id="double-result">—</p>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <span>`@` adalah padding dan ikut muncul pada ciphertext.</span>
+      <span>Demo pembelajaran · Myszkowski ganda</span>
+    </footer>
+  </main>
+
+  <script>
+    "use strict";
+
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const plaintextInput = document.getElementById("plaintext");
+    const keyOneInput = document.getElementById("key-one");
+    const keyTwoInput = document.getElementById("key-two");
+    const status = document.getElementById("status");
+
+    function cleanKey(value) {
+      return value.toUpperCase().replace(/[^A-Z]/g, "");
+    }
+
+    function keyOrderLabel(key, number) {
+      const sortedLetters = Array.from(new Set(key)).sort(
+        (left, right) => alphabet.indexOf(left) - alphabet.indexOf(right)
+      );
+      const ranks = Array.from(key, (letter) => sortedLetters.indexOf(letter) + 1);
+      return `KUNCI ${number} · ${ranks.join("-")}`;
+    }
+
+    function myszkowskiTranspose(text, key) {
+      const sortedLetters = Array.from(new Set(key)).sort(
+        (left, right) => alphabet.indexOf(left) - alphabet.indexOf(right)
+      );
+      const paddingLength = (key.length - (text.length % key.length)) % key.length;
+      const paddedText = text + "@".repeat(paddingLength);
+      const rowCount = paddedText.length / key.length;
+      let output = "";
+
+      for (const letter of sortedLetters) {
+        const columns = [];
+        for (let column = 0; column < key.length; column += 1) {
+          if (key[column] === letter) columns.push(column);
+        }
+
+        if (columns.length === 1) {
+          for (let row = 0; row < rowCount; row += 1) {
+            output += paddedText[row * key.length + columns[0]];
+          }
+        } else {
+          for (let row = 0; row < rowCount; row += 1) {
+            for (const column of columns) {
+              output += paddedText[row * key.length + column];
+            }
+          }
+        }
+      }
+      return output;
+    }
+
+    function updateResults() {
+      const keyOne = cleanKey(keyOneInput.value);
+      const keyTwo = cleanKey(keyTwoInput.value);
+      const normalized = plaintextInput.value.toUpperCase().replace(/[^A-Z-]/g, "");
+
+      if (!keyOne || !keyTwo) {
+        status.textContent = "Setiap kunci harus memiliki minimal satu huruf A–Z.";
+        return;
+      }
+      status.textContent = "";
+
+      const firstPass = myszkowskiTranspose(normalized, keyOne);
+      const secondPass = myszkowskiTranspose(firstPass, keyTwo);
+      document.getElementById("normalized-result").textContent = normalized || "(kosong)";
+      document.getElementById("first-transposition").textContent = firstPass || "(kosong)";
+      document.getElementById("double-result").textContent = secondPass || "(kosong)";
+      document.getElementById("first-key-order").textContent = keyOrderLabel(keyOne, 1);
+      document.getElementById("second-key-order").textContent = keyOrderLabel(keyTwo, 2);
+    }
+
+    [plaintextInput, keyOneInput, keyTwoInput].forEach((input) => {
+      input.addEventListener("input", updateResults);
+    });
+    document.getElementById("run-button").addEventListener("click", updateResults);
+    updateResults();
+  </script>
+</body>
+</html>
