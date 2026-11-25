@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101b2d">
+  <title>Lab Kriptografi — Transposisi Myszkowski Ganda</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101b2d;
+      --panel: #17263b;
+      --panel-soft: #1d3049;
+      --text: #edf4ff;
+      --muted: #a7b8ce;
+      --line: #30455f;
+      --accent: #71e0c0;
+      --accent-dark: #133f3d;
+      --warm: #ffcf84;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(ellipse at 85% 0%, #233d56 0, transparent 38rem),
+        var(--bg);
+      color: var(--text);
+      font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(100% - 32px, 1040px);
+      margin: 0 auto;
+      padding: 48px 0 64px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, p { margin-top: 0; }
+    h1 { max-width: 760px; margin-bottom: 12px; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.08; }
+    h2 { margin-bottom: 8px; font-size: 1.35rem; }
+    .intro, .muted { color: var(--muted); }
+    .intro { max-width: 700px; margin-bottom: 28px; }
+
+    .card {
+      margin-top: 18px;
+      padding: clamp(18px, 3vw, 28px);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: color-mix(in srgb, var(--panel) 94%, transparent);
+      box-shadow: 0 16px 40px #08111d55;
+    }
+
+    .inputs {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(180px, .55fr) minmax(180px, .55fr);
+      gap: 16px;
+      align-items: end;
+    }
+
+    label { display: block; margin-bottom: 7px; color: var(--muted); font-size: .9rem; font-weight: 650; }
+    textarea, input {
+      width: 100%;
+      border: 1px solid #405872;
+      border-radius: 10px;
+      background: #0e1929;
+      color: var(--text);
+      font: inherit;
+      outline: none;
+    }
+
+    textarea { min-height: 48px; resize: vertical; padding: 11px 13px; }
+    input { height: 48px; padding: 0 13px; text-transform: uppercase; }
+    textarea:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px #71e0c022; }
+
+    .hint { margin: 7px 0 0; color: var(--muted); font-size: .78rem; }
+    .note {
+      margin: 18px 0 0;
+      padding: 12px 14px;
+      border-left: 3px solid var(--warm);
+      border-radius: 4px 10px 10px 4px;
+      background: #ffcf8412;
+      color: #f3d9b2;
+      font-size: .9rem;
+    }
+
+    .results {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .result-card { min-width: 0; }
+    .result-card h2 { display: flex; gap: 10px; align-items: center; }
+    .number {
+      display: inline-grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--accent-dark);
+      color: var(--accent);
+      font-size: .8rem;
+    }
+
+    .result-box {
+      min-height: 60px;
+      margin: 14px 0;
+      padding: 15px;
+      overflow-wrap: anywhere;
+      border: 1px solid #315d5a;
+      border-radius: 12px;
+      background: #102b31;
+      color: #a5f4dd;
+      font: 700 1.04rem/1.6 ui-monospace, SFMono-Regular, Consolas, monospace;
+      letter-spacing: .08em;
+    }
+
+    .steps { display: grid; gap: 12px; }
+    .step {
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel-soft);
+    }
+    .step-label { margin-bottom: 5px; color: var(--muted); font-size: .8rem; }
+    .step-value { margin: 0; overflow-wrap: anywhere; font: 650 .95rem/1.55 ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .detail { margin: 12px 0 0; color: var(--muted); font-size: .85rem; }
+    .status { min-height: 1.4em; margin: 12px 0 0; color: #ffb9ac; font-size: .88rem; }
+    footer { margin-top: 24px; color: var(--muted); font-size: .82rem; text-align: center; }
+
+    @media (max-width: 700px) {
+      main { padding-top: 32px; }
+      .inputs, .results { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Praktikum kriptografi</p>
+      <h1>Transposisi Myszkowski Ganda</h1>
+      <p class="intro">Masukkan plainteks dan dua kunci untuk melihat hasil setiap tahap transposisi Myszkowski. Semua perhitungan berjalan langsung di halaman ini.</p>
+    </header>
+
+    <section class="card" aria-labelledby="input-title">
+      <h2 id="input-title">Data masukan</h2>
+      <div class="inputs">
+        <div>
+          <label for="plaintext">Plainteks</label>
+          <textarea id="plaintext" rows="2">kornelito-febriano-jehali</textarea>
+        </div>
+        <div>
+          <label for="key-one">Kunci 1</label>
+          <input id="key-one" value="yohanes" autocomplete="off">
+        </div>
+        <div>
+          <label for="key-two">Kunci 2 (transposisi)</label>
+          <input id="key-two" value="yohanes" autocomplete="off">
+        </div>
+      </div>
+      <p class="hint">Transposisi dilakukan dua kali: pertama dengan Kunci 1, lalu hasilnya ditransposisikan dengan Kunci 2. Tanda - ikut dihitung; karakter lainnya selain A–Z diabaikan. Padding @ ditambahkan otomatis agar setiap tabel penuh.</p>
+      <p class="note">Kunci kedua belum diberikan, jadi nilai awalnya disamakan dengan “yohanes”. Ubah Kunci 2 bila tugas Anda menetapkan kunci berbeda.</p>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="results" aria-label="Hasil enkripsi">
+      <article class="card result-card">
+        <h2><span class="number">1</span> Transposisi Myszkowski ganda</h2>
+        <p class="muted">Plainteks dinormalisasi menjadi huruf A–Z dan tanda - lalu ditulis per baris. Kolom diurutkan menurut huruf kunci; kolom dengan huruf kunci berulang dibaca mendatar per baris.</p>
+        <div class="steps">
+          <div class="step">
+            <p class="step-label">Plainteks normalisasi</p>
+            <p class="step-value" id="normalized-result">—</p>
+          </div>
+          <div class="step">
+            <p class="step-label">Hasil transposisi pertama · Kunci 1</p>
+            <p class="step-value" id="first-transposition">—</p>
+          </div>
+          <div class="step">
+            <p class="step-label">Hasil transposisi kedua · Kunci 2</p>
+            <p class="step-value" id="second-transposition">—</p>
+          </div>
+        </div>
+        <div class="result-box" id="double-result" aria-label="Hasil transposisi ganda">—</div>
+        <p class="detail">Tanda - dihitung sebagai karakter. Padding @ ditambahkan di akhir setiap tahap hingga panjang teks menjadi kelipatan panjang kunci.</p>
+      </article>
+    </section>
+    <footer>Demo edukasi — bukan untuk mengamankan data rahasia.</footer>
+  </main>
+
+  <script>
+    "use strict";
+
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const plaintextInput = document.getElementById("plaintext");
+    const keyOneInput = document.getElementById("key-one");
+    const keyTwoInput = document.getElementById("key-two");
+    const status = document.getElementById("status");
+
+    function cleanKey(value) {
+      return value.toUpperCase().replace(/[^A-Z]/g, "");
+    }
+
+    function myszkowskiTranspose(text, key) {
+      const sortedLetters = Array.from(new Set(key)).sort(
+        (left, right) => alphabet.indexOf(left) - alphabet.indexOf(right)
+      );
+      const paddingLength = (key.length - (text.length % key.length)) % key.length;
+      const paddedText = text + "@".repeat(paddingLength);
+      const rowCount = paddedText.length / key.length;
+      let output = "";
+
+      for (const letter of sortedLetters) {
+        const columns = [];
+        for (let column = 0; column < key.length; column += 1) {
+          if (key[column] === letter) columns.push(column);
+        }
+
+        if (columns.length === 1) {
+          for (let row = 0; row < rowCount; row += 1) {
+            const index = row * key.length + columns[0];
+            output += paddedText[index];
+          }
+        } else {
+          for (let row = 0; row < rowCount; row += 1) {
+            for (const column of columns) {
+              const index = row * key.length + column;
+              output += paddedText[index];
+            }
+          }
+        }
+      }
+      return output;
+    }
+
+    function updateResults() {
+      const keyOne = cleanKey(keyOneInput.value);
+      const keyTwo = cleanKey(keyTwoInput.value);
+      const plain = plaintextInput.value;
+
+      if (!keyOne || !keyTwo) {
+        status.textContent = "Kunci harus berisi minimal satu huruf A–Z.";
+        return;
+      }
+      status.textContent = "";
+
+      const normalized = plain.toUpperCase().replace(/[^A-Z-]/g, "");
+      const firstPass = myszkowskiTranspose(normalized, keyOne);
+      const secondPass = myszkowskiTranspose(firstPass, keyTwo);
+
+      document.getElementById("normalized-result").textContent = normalized || "(kosong)";
+      document.getElementById("first-transposition").textContent = firstPass || "(kosong)";
+      document.getElementById("second-transposition").textContent = secondPass || "(kosong)";
+      document.getElementById("double-result").textContent = secondPass || "(kosong)";
+    }
+
+    [plaintextInput, keyOneInput, keyTwoInput].forEach((input) => {
+      input.addEventListener("input", updateResults);
+    });
+    updateResults();
+  </script>
+</body>
+</html>
